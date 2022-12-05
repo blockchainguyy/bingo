@@ -6,6 +6,46 @@ pragma solidity =0.8.17;
  */
 interface IBingoGame {
     /**
+     * @dev Thrown when a bingo game is over
+     * */
+    error GameIsOver();
+
+    /**
+     * @dev Thrown when a bingo game is not started
+     * */
+    error GameNotStarted();
+
+    /**
+     * @dev Thrown when a bingo game is not created
+     * */
+    error GameNotCreated();
+
+    /**
+     * @dev Thrown when msg.sender is not a player of a game
+     * */
+    error NotAPlayer();
+
+    /**
+     * @dev Thrown when a bingo game is in progress
+     * */
+    error GameInProgress();
+
+    /**
+     * @dev Thrown when player trice to join a game twice
+     * */
+    error CannotJoinTwice();
+
+    /**
+     * @dev Thrown when draw called before minimum Turn duration
+     * */
+    error WaitForNextTurn();
+
+    /**
+     * @dev Thrown when a bingo call fails
+     * */
+    error BingoCheckFailed();
+
+    /**
      * @dev Emitted when a bingo game is created with index gameId
      * */
     event GameCreated(uint256 indexed gameId);
@@ -33,12 +73,12 @@ interface IBingoGame {
     /**
      * @dev Emitted when a number is drawn for a game with game index "gameIndex"
      * */
-    event Draw(uint256 indexed gameIndex);
+    event Draw(uint256 indexed gameIndex, uint8 numberDrawn);
 
     /**
      * @dev Emitted when a game with game index "gameIndex" is finished
      **/
-    event GameOver(uint256 indexed gameIndex);
+    event GameOver(uint256 indexed gameIndex, address winner, uint256 winnings);
 
     /**
      * @dev Updates the minumum join duration for games
@@ -81,19 +121,12 @@ interface IBingoGame {
      * */
     function draw(uint256 _gameIndex) external;
 
-    /**
-     * @dev registers a new bingo game, entry fee is set at game creation and connot be updated later
-     * Emits the GameCreated event
-     * */
-    function createGame() external;
+    // Todo : write description
+    function createGame() external returns (uint256);
 
     /**
      * @dev Checks if the sender has won the game with game index "_gameIndex" with patter of index "patternIndex" with number with drawn on indexs drawIndexes
      * Emits GameOver event
      * */
-    function bingo(
-        uint256 _gameIndex,
-        uint256 patternIndex,
-        uint256[5] calldata drawnIndexes
-    ) external;
+    function bingo(uint256 _gameIndex) external;
 }
